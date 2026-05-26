@@ -46,29 +46,26 @@ public class PhysicalTreeSetNodeNonEmpty implements PhysicalTreeSetNode // TODO:
 
     @Override
     public boolean contains(Physical p, PhysicalComparator comparator) {
-        int cmp = comparator.compare(p,value);
-
-        if (cmp == 0){
+        if (value.equals(p)) {
             return true;
         }
-        if (cmp > 0){
-            return right.contains(p,comparator);
+        int cmp = comparator.compare(p, value);
+        if (cmp < 0) {
+            return left.contains(p, comparator);
         }
-        return left.contains(p, comparator);
+        return right.contains(p, comparator);
     }
 
     @Override
     public PhysicalTreeSetNode insert(Physical p, PhysicalComparator comparator) {
-        int cmp = comparator.compare(p,value);
-
-        if (cmp == 0){
+        if (value.equals(p)) {
             return this;
         }
-        if (cmp > 0){
-            right = right.insert(p,comparator);
-        }
+        int cmp = comparator.compare(p, value);
         if (cmp < 0) {
             left = left.insert(p, comparator);
+        } else {
+            right = right.insert(p, comparator);
         }
         return this;
     }
