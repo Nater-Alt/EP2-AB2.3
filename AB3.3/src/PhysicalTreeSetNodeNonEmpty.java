@@ -83,8 +83,9 @@ public class PhysicalTreeSetNodeNonEmpty implements PhysicalTreeSetNode // TODO:
         if (!next){
             new PhysicalTreeIterator(this,iterator);
             left.iter(iterator,false);
-            right.iter(iterator,false);
+            return null;
         }
+        right.iter(iterator,false);
         return value;
     }
 }

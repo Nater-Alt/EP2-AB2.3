@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0c8f9c4d-4d2e-46ba-a37f-f1033fc9a1d7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../AB3.2/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../AB3.2/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PhysicalTreeSetNodeNonEmpty.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PhysicalTreeSetNodeNonEmpty.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +78,7 @@
       <workItem from="1779704533051" duration="5595000" />
       <workItem from="1779711592600" duration="6973000" />
       <workItem from="1779784661033" duration="75000" />
+      <workItem from="1779785059630" duration="40000" />
     </task>
     <servers />
   </component>
