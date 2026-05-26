@@ -11,8 +11,6 @@ public class PhysicalTreeSetNodeNonEmpty implements PhysicalTreeSetNode // TODO:
     private PhysicalTreeSetNode left;
     private PhysicalTreeSetNode right;
     private Physical value;
-    private PhysicalComparator comparator;
-    private int size;
     // TODO: all object variables and additional constructors and methods are private,
     //  unless a method overrides or implements an inherited public method.
 
@@ -29,7 +27,6 @@ public class PhysicalTreeSetNodeNonEmpty implements PhysicalTreeSetNode // TODO:
         this.left = PhysicalTreeSetNodeEmpty.EMPTY;
         this.right = PhysicalTreeSetNodeEmpty.EMPTY;
         this.value = value;
-        this.comparator = comparator;
     }
 
     @Override
@@ -65,43 +62,29 @@ public class PhysicalTreeSetNodeNonEmpty implements PhysicalTreeSetNode // TODO:
         int cmp = comparator.compare(p,value);
 
         if (cmp == 0){
-            return null;
-        }
-        if (cmp > 0 && right != null){
-            return right.insert(p,comparator);
-        }
-        if (cmp < 0 && left != null) {
-            return left.insert(p,comparator);
-        }
-        if (right == null){
-            this.right = new PhysicalTreeSetNodeNonEmpty(p,comparator);
-            size++;
             return this;
         }
-        this.left = new PhysicalTreeSetNodeNonEmpty(p,comparator);
-        size++;
+        if (cmp > 0){
+            right = right.insert(p,comparator);
+        }
+        if (cmp < 0) {
+            left = left.insert(p, comparator);
+        }
         return this;
     }
 
     @Override
     public int size() {
-        return size;
+        return 1 + left.size() + right.size();
     }
 
     @Override
     public Physical iter(PhysicalTreeIterator iterator, boolean next) {
+        if (!next){
+            new PhysicalTreeIterator(this,iterator);
+            left.iter(iterator,false);
+            right.iter(iterator,false);
+        }
         return value;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == null || getClass() != object.getClass()) return false;
-        PhysicalTreeSetNodeNonEmpty that = (PhysicalTreeSetNodeNonEmpty) object;
-        return size == that.size && Objects.equals(value, that.value) && Objects.equals(comparator, that.comparator);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(left, right, value, comparator, size);
     }
 }

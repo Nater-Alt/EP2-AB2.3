@@ -7,12 +7,10 @@
  * <p>The iteration order is determined by the internal table layout and is
  * therefore unspecified.</p>
  */
-public class PhysicalPhysicalHashMapIterator //implements PhysicalIterator //TODO: acivate clause.
+public class PhysicalPhysicalHashMapIterator implements PhysicalIterator
 {
-
-    // TODO: all variables and additional constructors and methods are private,
-    //  unless a method overrides or implements an inherited public method.
-
+    private Physical[] keys;
+    private int index;
     /**
      * Creates a new iterator over the specified hash table key array.
      *
@@ -20,7 +18,30 @@ public class PhysicalPhysicalHashMapIterator //implements PhysicalIterator //TOD
      *             {@code keys != null}
      */
     public PhysicalPhysicalHashMapIterator(Physical[] keys) {
-
-        //TODO: implement constructor.
+        this.keys = keys;
+        this.index = 0;
+        advanceToNextOccupied();
     }
+
+    @Override
+    public boolean hasNext() {
+        return index < keys.length;
+    }
+
+    @Override
+    public Physical next() {
+        if (index >= keys.length) {
+            return null;
+        }
+        Physical result = keys[index];
+        index++;
+        advanceToNextOccupied();
+        return result;
+    }
+    private void advanceToNextOccupied() {
+        while (index < keys.length && keys[index] == null) {
+            index++;
+        }
+    }
+
 }

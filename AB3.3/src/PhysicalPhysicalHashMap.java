@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * Hash-table implementation of {@link PhysicalPhysicalMap}.
  *
@@ -103,9 +106,11 @@ public class PhysicalPhysicalHashMap implements PhysicalPhysicalMap, PhysicalIte
      */
     @Override
     public PhysicalSet keySet() {
-
-        //TODO: implement method.
-        return null;
+        PhysicalTreeSet set = new PhysicalTreeSet();
+        for (Physical p : this) {
+            set.add(p);
+        }
+        return set;
     }
 
     /**
@@ -113,9 +118,7 @@ public class PhysicalPhysicalHashMap implements PhysicalPhysicalMap, PhysicalIte
      */
     @Override
     public PhysicalIterator iterator() {
-
-        //TODO: implement method.
-        return null;
+        return new PhysicalPhysicalHashMapIterator(keys);
     }
 
     /**
@@ -159,5 +162,39 @@ public class PhysicalPhysicalHashMap implements PhysicalPhysicalMap, PhysicalIte
                 put(oldKeys[i], oldValues[i]);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+
+        if (this == object) return true;
+
+        if (!(object instanceof PhysicalPhysicalMap)) return false;
+
+        PhysicalPhysicalMap other = (PhysicalPhysicalMap) object;
+
+        if (other.size() != this.size) return false;
+
+
+        for (Physical key : keySet()){
+
+            if (!other.containsKey(key)) {
+                return false;
+            }
+
+            if (!(other.get(key).equals(this.get(key)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int sum = 0;
+        for (Physical key : keySet()){
+            sum += Objects.hash(key,get(key));
+        }
+        return sum;
     }
 }

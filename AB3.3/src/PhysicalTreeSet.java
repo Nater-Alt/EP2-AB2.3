@@ -11,7 +11,6 @@ import java.util.Objects;
 public class PhysicalTreeSet implements PhysicalSet
 {
     private PhysicalTreeSetNode root;
-    private int size;
     private PhysicalComparator comparator;
 
     /**
@@ -19,7 +18,6 @@ public class PhysicalTreeSet implements PhysicalSet
      */
     public PhysicalTreeSet() {
         root = PhysicalTreeSetNodeEmpty.EMPTY;
-        size = 0;
         comparator = new XComparator();
     }
 
@@ -30,14 +28,17 @@ public class PhysicalTreeSet implements PhysicalSet
      *                   {@code comparator != null}
      */
     public PhysicalTreeSet(PhysicalComparator comparator) {
-        root = new PhysicalTreeSetNodeEmpty();
-        size = 0;
+        root = PhysicalTreeSetNodeEmpty.EMPTY;
         this.comparator = comparator;
     }
 
     @Override
     public boolean add(Physical p) {
-        return root.insert(p, comparator) != null;
+        if (root.contains(p,comparator)){
+            return false;
+        }
+        root = root.insert(p, comparator);
+        return true;
     }
 
     @Override
@@ -47,19 +48,17 @@ public class PhysicalTreeSet implements PhysicalSet
 
     @Override
     public int size() {
-        return size;
+        return root.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return size == 0;
+        return size() == 0;
     }
 
     @Override
     public void clear() {
         root = PhysicalTreeSetNodeEmpty.EMPTY;
-        size = 0;
-        comparator = new XComparator();
     }
 
     /**
@@ -68,9 +67,11 @@ public class PhysicalTreeSet implements PhysicalSet
      * <p>The iterator traverses the elements in ascending order according
      * to the comparator of this set.</p>
      */
-    // @Override
+    @Override
     public PhysicalIterator iterator() {
-        return null;
+        PhysicalTreeIterator it = new PhysicalTreeIterator();
+        root.iter(it,false);
+        return it;
     }
 
     /**
@@ -93,8 +94,15 @@ public class PhysicalTreeSet implements PhysicalSet
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        PhysicalTreeSet physicals = (PhysicalTreeSet) o;
-        return physicals.root.equals(this.root);
+        PhysicalTreeSet other = (PhysicalTreeSet) o;
+        if (this.size() != other.size()) return false;
+        PhysicalIterator it = this.iterator();
+        while (it.hasNext()){
+            if (!other.contains(it.next())){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -102,7 +110,11 @@ public class PhysicalTreeSet implements PhysicalSet
      */
     @Override
     public int hashCode() {
-        return Objects.hashCode(root);
+        int sum = 0;
+        for (Physical physical : this) {
+            sum += Objects.hashCode(physical);
+        }
+        return sum;
     }
 
 }

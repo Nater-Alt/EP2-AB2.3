@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * An associative data structure (map) mapping {@link Physical} keys
  * to {@link Physical} values.
@@ -115,9 +117,9 @@ public class PhysicalPhysicalTreeMap implements PhysicalPhysicalMap {
      */
     @Override
     public PhysicalSet keySet() {
-
-        //TODO: implement method.
-        return null;
+        PhysicalTreeSet set = new PhysicalTreeSet(comparator);
+        root.fillKeys(set);
+        return set;
     }
 
     /**
@@ -131,9 +133,9 @@ public class PhysicalPhysicalTreeMap implements PhysicalPhysicalMap {
      * @return a set containing all stored values.
      */
     public PhysicalSet valueSet() {
-
-        //TODO: implement method.
-       return null;
+        PhysicalTreeSet set = new PhysicalTreeSet(comparator);
+        root.fillValues(set);
+        return set;
     }
 
     /**
@@ -164,5 +166,39 @@ public class PhysicalPhysicalTreeMap implements PhysicalPhysicalMap {
         }
 
         return root.toIndentedString("");
+    }
+
+    @Override
+    public boolean equals(Object object) {
+
+        if (this == object) return true;
+
+        if (!(object instanceof PhysicalPhysicalMap)) return false;
+
+        PhysicalPhysicalMap other = (PhysicalPhysicalMap) object;
+
+        if (other.size() != this.size) return false;
+
+
+        for (Physical key : keySet()){
+
+            if (!other.containsKey(key)) {
+                return false;
+            }
+
+            if (!(other.get(key).equals(this.get(key)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int sum = 0;
+        for (Physical key : keySet()){
+            sum += Objects.hash(key,get(key));
+        }
+        return sum;
     }
 }
